@@ -9,10 +9,10 @@
 		<version>2.3.4.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.devsuperior</groupId>
-	<artifactId>dscatalog</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>catalogo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dscatalog</name>
+	<name>catalogo</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
