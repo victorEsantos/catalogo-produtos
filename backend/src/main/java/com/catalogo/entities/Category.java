@@ -1,5 +1,6 @@
 package com.catalogo.entities;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -39,7 +40,8 @@ public class Category implements Serializable{
 	
 	@ManyToMany(mappedBy = "categories")
 	private Set<Product> products = new HashSet<>();
-	
+
+	@Builder
 	public Category(Long id, String name) {
 		this.id = id;
 		this.name = name;

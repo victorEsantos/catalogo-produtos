@@ -1,4 +1,4 @@
-package com.catalogo.resources.exceptions;
+package com.catalogo.api.exceptions;
 
 import java.time.Instant;
 
@@ -16,7 +16,7 @@ import com.catalogo.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-	
+
 	// metodo para tratamento de erro recurso não encontrado / resposta 404
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
@@ -29,7 +29,7 @@ public class ResourceExceptionHandler {
 		error.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(error);
 	}
-	
+
 	// metodo para tratamento de erro violação de integridade / resposta 400
 	@ExceptionHandler(DatabaseException.class)
 	public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
@@ -42,15 +42,15 @@ public class ResourceExceptionHandler {
 		error.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(error);
 	}
-	
+
 	// metodo para tratamento de erro de validação / resposta 422
-	
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ValidationErro> validatiom(MethodArgumentNotValidException e, HttpServletRequest request) {
 		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 		ValidationErro error = new ValidationErro();
 		error.setTimestamp(Instant.now());
-		error.setStatus(status.value());           
+		error.setStatus(status.value());
 		error.setError("Validation exception!");
 		error.setMessage(e.getMessage());
 		error.setPath(request.getRequestURI());

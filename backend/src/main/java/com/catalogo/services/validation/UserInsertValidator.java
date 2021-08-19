@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 import com.catalogo.dto.UserInsertDTO;
 import com.catalogo.entities.User;
 import com.catalogo.repositories.UserRepository;
-import com.catalogo.resources.exceptions.FieldMessage;
+import com.catalogo.api.exceptions.FieldMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {

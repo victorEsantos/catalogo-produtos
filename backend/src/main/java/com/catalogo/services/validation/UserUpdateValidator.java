@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
 import com.catalogo.dto.UserUpdateDTO;
 import com.catalogo.entities.User;
 import com.catalogo.repositories.UserRepository;
-import com.catalogo.resources.exceptions.FieldMessage;
+import com.catalogo.api.exceptions.FieldMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 

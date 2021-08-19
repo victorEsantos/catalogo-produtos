@@ -1,11 +1,11 @@
 package com.catalogo.services;
 
-// camada de serviço
-
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
+import com.catalogo.dto.ProductDTO;
+import com.catalogo.entities.Product;
+import com.catalogo.repositories.CategoryRepository;
+import com.catalogo.repositories.ProductRepository;
+import com.catalogo.services.exceptions.DatabaseException;
+import com.catalogo.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,56 +14,45 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.catalogo.dto.CategoryDTO;
-import com.catalogo.dto.ProductDTO;
-import com.catalogo.entities.Category;
-import com.catalogo.entities.Product;
-import com.catalogo.repositories.CategoryRepository;
-import com.catalogo.repositories.ProductRepository;
-import com.catalogo.services.exceptions.DatabaseException;
-import com.catalogo.services.exceptions.ResourceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService {
 	
-	// injeção de dependencia para a camada de acesso a dados de produtos
-	
 	@Autowired
 	private ProductRepository repository;
-	
-	// injeção de dependencia para a camada de acesso a dados das categorias
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
 	
-	@Transactional(readOnly = true)      // busca paginada
-	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {  // metodo para buscar todas as categorias
-		Page<Product> list = repository.findAll(pageRequest);
-		return list.map(x -> new ProductDTO(x));
+	@Transactional(readOnly = true)
+	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
+		var list = repository.findAll(pageRequest);
+		return list.map(ProductDTO::new);
 	
 	}
 	
 	@Transactional(readOnly = true)
-	public ProductDTO findById(Long id) {    // metodo buscar uma produto por id
-		Optional<Product> obj = repository.findById(id);
-		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+	public ProductDTO findById(Long id) {
+		var obj = repository.findById(id);
+		var entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new ProductDTO(entity, entity.getCategories());
 	}
 	
 	@Transactional
-	public ProductDTO insert(ProductDTO dto) {  // metodo inserir uma novo produto
-		Product entity = new Product();
+	public ProductDTO insert(ProductDTO dto) {
+		var entity = new Product();
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
 	}
 
 	@Transactional
-	public ProductDTO update(Long id, ProductDTO dto) {   // metodo para atualizar um registro
+	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
-			Product entity = repository.getOne(id);            // utilizar getOne em vez do findById para não ir no banco
-			copyDtoToEntity(dto, entity);                      // de dados sem nescessidade.
+			var entity = repository.getOne(id);
+			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new ProductDTO(entity);
 		}
@@ -73,7 +62,7 @@ public class ProductService {
 		
 	}
  
-	public void delete(Long id) {                        // metodo para deletar um recurso
+	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
 		}
@@ -83,9 +72,7 @@ public class ProductService {
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Violação de integridade");
 		}
-	}       
-	
-	// metodo auxiliar  para receber dados do dto
+	}
 	
 	private void copyDtoToEntity(ProductDTO dto, Product entity) {
 		
@@ -96,12 +83,11 @@ public class ProductService {
 		entity.setPrice(dto.getPrice());
 		
 		entity.getCategories().clear();
-		
-		for (CategoryDTO catDto: dto.getCategories()) {
-			Category category = categoryRepository.getOne(catDto.getId());
+
+		dto.getCategories().stream().forEach(catDto -> {
+			var category = categoryRepository.getOne(catDto.getId());
 			entity.getCategories().add(category);
-		}
-		
+		});
 	}
 
 }

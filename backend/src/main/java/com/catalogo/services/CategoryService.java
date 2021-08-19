@@ -1,9 +1,10 @@
 package com.catalogo.services;
 
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
+import com.catalogo.dto.CategoryDTO;
+import com.catalogo.entities.Category;
+import com.catalogo.repositories.CategoryRepository;
+import com.catalogo.services.exceptions.DatabaseException;
+import com.catalogo.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,11 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.catalogo.dto.CategoryDTO;
-import com.catalogo.entities.Category;
-import com.catalogo.repositories.CategoryRepository;
-import com.catalogo.services.exceptions.DatabaseException;
-import com.catalogo.services.exceptions.ResourceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -24,33 +21,34 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository repository;
 	
-	@Transactional(readOnly = true)      // busca paginada
-	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {  // metodo para buscar todas as categorias
-		Page<Category> list = repository.findAll(pageRequest);
-		return list.map(x -> new CategoryDTO(x));
+	@Transactional(readOnly = true)
+	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+		var list = repository.findAll(pageRequest);
+		return list.map(CategoryDTO::new);
 	
 	}
 	
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {    // metodo buscar uma categoria por id
-		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada"));
+		var obj = repository.findById(id);
+		var entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada"));
 		return new CategoryDTO(entity);
 	}
 	
 	@Transactional
-	public CategoryDTO insert(CategoryDTO dto) {  // metodo inserir uma nova categoria
-		Category entity = new Category();
-		entity.setName(dto.getName());
+	public CategoryDTO insert(CategoryDTO dto) {
+		var entity = Category.builder()
+				.name(dto.getName())
+				.build();
 		entity = repository.save(entity);
 		return new CategoryDTO(entity);
 	}
 	
 	@Transactional
-	public CategoryDTO update(Long id, CategoryDTO dto) {   // metodo para atualizar um registro
+	public CategoryDTO update(Long id, CategoryDTO dto) {
 		try {
-			Category entity = repository.getOne(id);            // utilizar getOne em vez do findById para não ir no banco
-			entity.setName(dto.getName());                      // de dados sem nescessidade.
+			var entity = repository.getOne(id);
+			entity.setName(dto.getName());
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);
 		}
@@ -60,7 +58,7 @@ public class CategoryService {
 		
 	}
  
-	public void delete(Long id) {     // metodo para deletar um recurso 
+	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
 		}
