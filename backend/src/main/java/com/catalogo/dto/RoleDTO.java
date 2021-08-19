@@ -3,58 +3,28 @@ package com.catalogo.dto;
 import java.io.Serializable;
 
 import com.catalogo.entities.Role;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-// objeto simples para trafegar dados entre a aplicação e o controller
-// nao vai ser monitorado
+@Data
+@NoArgsConstructor
+public class RoleDTO implements Serializable {
 
-public class RoleDTO implements Serializable{
-	
-	// para transformar o objeto em bytes
-	
-	private static final long serialVersionUID = 1L;
-	// atributos basico
-	
-	private Long id;
-	private String authority;
-	
-	// construtor default
-	
-	public RoleDTO() {
-		
-	}
-	
-	// construtor com argumentos
+    private static final long serialVersionUID = 1L;
 
-	public RoleDTO(Long id, String authority) {
-		this.id = id;
-		this.authority = authority;
-	}
+    private Long id;
+    private String authority;
 
-	// construtor personalizado recebendo uma entidade
-	
-	public RoleDTO(Role role) {
-		this.id = role.getId();
-		this.authority = role.getAuthority();
-	}
-	
-	// Getters & setters
+    @Builder
+    public RoleDTO(Long id, String authority) {
+        this.id = id;
+        this.authority = authority;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public RoleDTO(Role role) {
+        this.id = role.getId();
+        this.authority = role.getAuthority();
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getAuthority() {
-		return authority;
-	}
-
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
-	
-	
-		
 }
