@@ -1,0 +1,25 @@
+volumes:
+  curso-hib-pg-data: { }
+  rabbitmq-data: { }
+
+services:
+  database-postgres:
+    image: sameersbn/postgresql:10-1
+    restart: always
+    environment:
+      DB_NAME: catalog, catalog-dev
+      DB_USER: postgres
+      DB_PASS: adm@123
+      PG_PASSWORD: adm@123
+    ports:
+      - 5432:5432
+    volumes:
+      - curso-hib-pg-data:/var/lib/postgresql
+
+  database-pg-admin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@dev.com.br
+      PGADMIN_DEFAULT_PASSWORD: dev
+    ports:
+      - 8000:80
