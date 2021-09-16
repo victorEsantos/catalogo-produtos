@@ -4,13 +4,16 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import com.catalogo.api.openapi.ProductControllerOpenAPI;
 import com.catalogo.dto.ProductDTO;
 import com.catalogo.services.ProductService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping(value = "/products") 
-public class ProductResource {
+@RequestMapping(value = "/products")
+@Api(value = "Produto Controller")
+@CrossOrigin(origins = "*")
+public class ProductResource implements ProductControllerOpenAPI {
 
 	@Autowired
 	private ProductService service;

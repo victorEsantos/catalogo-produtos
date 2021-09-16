@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 
 import com.catalogo.entities.Category;
 import com.catalogo.entities.Product;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,16 +27,23 @@ public class ProductDTO implements Serializable{
 	
 	@Size(min = 5, max = 60, message =  "Deve ter entre 5 e 60 caracteres")
 	@NotBlank(message = "Campo obrigatório")
+	@ApiModelProperty(value = "Nome do produto", required = false)
 	private String name;
+	@ApiModelProperty(value = "Descrição do produto", required = false)
 	private String description;
 	
 	@Positive(message = "O preço deve ser um valor positivo")
+	@ApiModelProperty(value = "Preço do produto", required = false)
 	private Double price;
+
+	@ApiModelProperty(value = "Url da imagem do produto", required = false)
 	private String imgUrl;
 	
 	@PastOrPresent(message = "A data do produto não pode ser futura")
+	@ApiModelProperty(value = "Data criação do produto", required = false)
 	private Instant date;
-	
+
+	@ApiModelProperty(value = "Lista de categorias que produto possui", required = false)
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	@Builder
